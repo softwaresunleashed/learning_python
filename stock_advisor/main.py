@@ -31,41 +31,12 @@ from email.encoders import encode_base64
 
 import sys
 
-###################################
-# Some Filesystem related constants
-###################################
-ROOT_PATH = os.path.join(os.path.expanduser("~"), "Desktop", "botTrading")
-ROOT_PATH_CHART = os.path.join(os.path.expanduser("~"), "Desktop", "botTrading", "chart")
-
-# Sleep Constants
-SLEEP_INTERIM_SEC = 0.01
-SLEEP_REEVAL_SECS = (5 * 60)  # Re-Evaluate scrips every -> 60 Mins or 1 Hr
-
-# Re-Evaluation
-NUM_OF_REEVALS = 5
+# project specific includes
+from utils import *
 
 
-def AddDirectory():
-    import os
-    path = ROOT_PATH
-    try:
-        os.mkdir(path)
-    except OSError:
-        print("Creation of the directory %s failed" % path)
-    else:
-        print("Successfully created the directory %s " % path)
 
 
-def RemoveDirectory():
-    import shutil
-    path = ROOT_PATH
-
-    try:
-        shutil.rmtree(path)
-    except OSError:
-        print("Deletion of the directory %s failed" % path)
-    else:
-        print("Successfully deleted the directory %s" % path)
 
 
 #########################
@@ -370,15 +341,15 @@ def main():
         while condition:
             try:
                 # Select Stock + NSE / BSE exchange
-                # tickers.clear()
-                # tickers.append('SBIN')
-                # tickers.append('PVR')
+                tickers.clear()
+                tickers.append('SBIN')
+                tickers.append('PVR')
 
                 # Original Code - Extract for all tickers passed
                 stock = tickers[i] + '.NS'
                 print(stock)
 
-                # Sudhanshu's RSI calculation code
+                # Sudhanshu's RSI_14 calculation code
                 signal = TradingStrategyRSI(stock, start, interval)['Signal']
                 # Original Code
                 # signal = TradingStrategy(stock, start, interval)['Signal']
@@ -391,11 +362,12 @@ def main():
                         Chart(stock, start, interval)
                         message = "TestBot-price below average, recommendation close position: " + str(stock)
                         sendemail(stock, message)
+
+                # Move to next ticker in list
                 i = i + 1
                 if i == len(tickers):
                     condition = False
                 time.sleep(SLEEP_INTERIM_SEC)
-
             except Exception as e:
                 print('ERROR', e)
                 i = i + 1  # Move to next scrip
