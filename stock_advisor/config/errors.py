@@ -1,5 +1,0 @@
-
-
-
-
-ERROR_MSG = 'ERROR'
